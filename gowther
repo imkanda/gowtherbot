@@ -1,0 +1,167 @@
+import discord
+import asyncio
+import random
+
+
+class MyClient(discord.Client):
+    embedDic = {}
+    demonList = ["<@&749439441579278416>", "<@&749438436188094464>", "<@&749439360394461301>"]
+    guildchannel = ''
+
+## demon sharing embeds ##
+    async def demon_sharing(self):
+        demon_sharing = discord.Embed(
+            title="Demon Sharing",
+            description='Begin your message with !red, !grey, or !crimson to request help clearing a demon. Can only send one request per allotted time.',
+            colour=discord.Colour.light_gray()
+        )
+        msg = await self.guildchannel.send(content='whatever/or nothing', embed=demon_sharing)
+        
+
+    async def crimson_demon(self, message):
+        crimson = discord.Embed(
+            title='Crimson Demon',
+            description='React to claim this demon!',
+            colour=discord.Colour.red()
+        )
+        crimson.set_footer(text='offered by: {}'.format(message.author))
+        crimson.set_image(
+            url='https://cdn.discordapp.com/emojis/675826404012720138.png?v=1')
+        crimson.add_field(name='Claims', value='None!')
+
+        author = "{}".format(message.author)
+        msg = await message.channel.send(content='<@&749439360394461301>', embed=crimson)
+        await msg.add_reaction('\U0001F44D')
+        self.embedDic[author] = msg
+        self.loop.create_task(self.finish_request(message.channel, author))
+
+    async def grey_demon(self, message):
+        grey = discord.Embed(
+            title='Grey Demon',
+            description='React to claim this demon!',
+            colour=discord.Colour.dark_grey()
+        )
+        grey.set_footer(text='offered by: {}'.format(message.author))
+        grey.set_image(
+            url='https://images-ext-2.discordapp.net/external/0j5Ju076KA6pVVVttzNZ9hZDMMy6GAe-sU3BCLzXVgw/%3Fv%3D1/https/cdn.discordapp.com/emojis/696415589559828576.png')
+        grey.add_field(name='Claims', value='None!')
+
+        author = "{}".format(message.author) #dont do this, this is bad
+        msg = await message.channel.send(content='<@&749439441579278416>', embed=grey)
+        await msg.add_reaction('\U0001F44D')
+        self.embedDic[author] = msg
+        self.loop.create_task(self.finish_request(message.channel, author))
+
+    async def red_demon(self, message):
+        red = discord.Embed(
+            title='Red Demon',
+            description='React to claim this demon!',
+            colour=discord.Colour.dark_red()
+        )
+        red.set_footer(text='offered by: {}'.format(message.author))
+        red.set_image(
+            url='https://cdn.discordapp.com/emojis/696415568714268764.png?v=1')
+        red.add_field(name='Claims', value='None!')
+
+        author = "{}".format(message.author)
+        msg = await message.channel.send(content='<@&749438436188094464>', embed=red)
+        await msg.add_reaction('\U0001F44D')
+        self.embedDic[author] = msg
+        self.loop.create_task(self.finish_request(message.channel, author))
+
+    async def finish_request(self, channel, author):
+        await asyncio.sleep(10)
+        embed = self.embedDic[author].embeds[0]
+        msg = self.embedDic[author]
+        field = embed.fields[0]
+        if field.value == 'None!':
+            embed.set_field_at(0, name="Claims", value="No one claimed")
+            await msg.edit(embed=embed)
+            return
+        else:
+            people = field.value.split(',')
+            people = ' '.join(people).split()
+            selected = random.choice(people)
+            await channel.send(selected + " has been picked!")
+
+        self.embedDic.pop(author)
+
+    def add_person_to_field(self, embed, user):
+        field = embed.fields[0]
+        person = user.mention
+        if field.value == 'None!':
+           embed.set_field_at(0, name='claims', value=person + ',')
+        elif not(person in field.value):
+           embed.set_field_at(0, name='claims', value=field.value + person + ',')
+        else:
+            return discord.embeds.EmptyEmbed
+
+        return embed
+
+## bot login ##
+    async def on_ready(self):
+        print('Logged on as', self.user)
+
+## demon-sharing commands ##
+    
+    async def on_connect(self):
+        self.guildchannel = discord.utils.get(guild.text_channels,name="demon_sharing")
+        self.demon_sharing()    
+
+    async def on_message(self, message):
+            if str(message.channel) == "demon-sharing":
+            # demon sharing bot should only work in #demon-sharing
+            # don't respond to ourselves
+                if message.author == self.user:
+                    return
+
+                if message.content.startswith('!help'):
+                    await message.channel.send("You can offer demons by typing !red, !grey, or !crimson in chat. You can only make one offer at a time. Avoid posting multiple demon requests, simply add whatever other demons you may have in a message along with the initial demon offer.")
+                    return
+
+                if message.content.startswith('!grey'):
+            # for x in client.users:
+            #  await message.channel.send(x)
+                    if str(message.author) in self.embedDic:
+                        await message.channel.send("You can only make 1 request at a time")
+                        return
+                    else:
+                        await self.grey_demon(message)
+
+                if message.content.startswith('!red'):
+                        if str(message.author) in self.embedDic:
+                            await message.channel.send("You can only make 1 request at a time")
+                            return
+                        else:
+                            await self.red_demon(message)
+                            return
+
+                if message.content.startswith('!crimson'):
+                        if str(message.author) in self.embedDic:
+                            await message.channel.send("You can only make 1 request at a time")
+                            return
+                        else:
+                            await self.crimson_demon(message)
+                            return
+  
+    async def on_reaction_add(self, reaction, user):
+        if user == self.user:
+            return
+        else:
+            channel = reaction.message.channel
+            e = reaction.message.embeds[0]
+            original_user = e.footer.text.split(": ")[1]
+            for x in self.demonList:
+                if reaction.message.content == x:
+                    edited_embed = self.add_person_to_field(e, user)
+                    if edited_embed == discord.embeds.EmptyEmbed:
+                        return
+                    if original_user in self.embedDic:
+                        embed_loc = self.embedDic[original_user]
+                        if embed_loc != discord.embeds.EmptyEmbed:
+                            await embed_loc.edit(embed=edited_embed)
+                            return
+                        #await channel.send('{} added {} to the grey demon embed'.format(user.name, reaction.emoji))
+
+client=MyClient()
+client.run("NzQ5NDUxODQwMjgxNjQxMDAw.X0sLag.HW0k1dawwudl6USfYYHFgxx_OeU")
