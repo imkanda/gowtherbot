@@ -9,7 +9,7 @@ class MyClient(discord.Client):
 
 ## embeds ##
     
-    async def welcome_message(self):
+    async def welcome_message(self, channel):
         welcome_message = discord.Embed(
             title = 'Title',
             description = 'This is the description',
@@ -24,7 +24,7 @@ class MyClient(discord.Client):
         welcome_message.add_field(name='Field Name', value='Field Value', inline=True)
         msg = await channel.send(embed=welcome_message)
 
-    async def demon_sharing(self):
+    async def demon_sharing(self, channel):
         demon_sharing = discord.Embed(
             title="Demon Sharing",
             description='Begin your message with !red, !grey, or !crimson to request help clearing a demon. Can only send one request per allotted time.',
