@@ -22,7 +22,7 @@ class MyClient(discord.Client):
         welcome_message.add_field(name='Field Name', value='Field Value', inline=False)
         welcome_message.add_field(name='Field Name', value='Field Value', inline=True)
         welcome_message.add_field(name='Field Name', value='Field Value', inline=True)
-        msg = await self.guildchannel.send(embed=welcome_message)
+        msg = await channel.send(embed=welcome_message)
 
     async def demon_sharing(self):
         demon_sharing = discord.Embed(
@@ -30,7 +30,7 @@ class MyClient(discord.Client):
             description='Begin your message with !red, !grey, or !crimson to request help clearing a demon. Can only send one request per allotted time.',
             colour=discord.Colour.light_gray()
         )
-        msg = await self.guildchannel.send(embed=demon_sharing)
+        msg = await channel.send(embed=demon_sharing)
         
 
     async def crimson_demon(self, message):
