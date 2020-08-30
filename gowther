@@ -6,16 +6,31 @@ import random
 class MyClient(discord.Client):
     embedDic = {}
     demonList = ["<@&749439441579278416>", "<@&749438436188094464>", "<@&749439360394461301>"]
-    guildchannel = ''
 
-## demon sharing embeds ##
+## embeds ##
+    
+    async def welcome_message(self):
+        welcome_message = discord.Embed(
+            title = 'Title',
+            description = 'This is the description',
+            colour = discord.Colour.blue()
+        )
+        welcome_message.set_footer(text='This is the footer')
+        welcome_message.set_image(url='https://images-ext-1.discordapp.net/external/PLczhzrY3aKz1z_bLEZtu3UmoiM6Yfhi1Yj43zhb9EA/https/cdn.discordapp.com/icons/712808446180720651/a_62f385677add7534a420a866e7b8ae08.gif')
+        welcome_message.set_thumbnail(url='https://images-ext-1.discordapp.net/external/PLczhzrY3aKz1z_bLEZtu3UmoiM6Yfhi1Yj43zhb9EA/https/cdn.discordapp.com/icons/712808446180720651/a_62f385677add7534a420a866e7b8ae08.gif')
+        welcome_message.set_author(name='Author Name', icon_url='https://images-ext-1.discordapp.net/external/PLczhzrY3aKz1z_bLEZtu3UmoiM6Yfhi1Yj43zhb9EA/https/cdn.discordapp.com/icons/712808446180720651/a_62f385677add7534a420a866e7b8ae08.gif')
+        welcome_message.add_field(name='Field Name', value='Field Value', inline=False)
+        welcome_message.add_field(name='Field Name', value='Field Value', inline=True)
+        welcome_message.add_field(name='Field Name', value='Field Value', inline=True)
+        msg = await self.guildchannel.send(embed=welcome_message)
+
     async def demon_sharing(self):
         demon_sharing = discord.Embed(
             title="Demon Sharing",
             description='Begin your message with !red, !grey, or !crimson to request help clearing a demon. Can only send one request per allotted time.',
             colour=discord.Colour.light_gray()
         )
-        msg = await self.guildchannel.send(content='whatever/or nothing', embed=demon_sharing)
+        msg = await self.guildchannel.send(embed=demon_sharing)
         
 
     async def crimson_demon(self, message):
@@ -102,18 +117,30 @@ class MyClient(discord.Client):
     async def on_ready(self):
         print('Logged on as', self.user)
 
+## welcome message stuff ##
+
+    async def on_member_join(self, member):
+        ment = discord.Member.mention
+        await message.channel.send("{ment} has joined the server")
+        print(f"{member} has joined the server.")
+
 ## demon-sharing commands ##
     
     async def on_connect(self):
-        self.guildchannel = discord.utils.get(guild.text_channels,name="demon_sharing")
-        self.demon_sharing()    
-
-    async def on_message(self, message):
+        return
+        ## self.guildchannel = discord.utils.get(guild.text_channels,name="demon_sharing")
+        ## self.demon_sharing()    
+        ## none of this ended up working so commented out, called by command instead            
+    async def on_message(self, message):        
             if str(message.channel) == "demon-sharing":
             # demon sharing bot should only work in #demon-sharing
             # don't respond to ourselves
                 if message.author == self.user:
                     return
+
+                if message.content.startswith('!sharing'):
+                    ch = self.get_channel(749466052068376649)
+                    await self.demon_sharing(ch)
 
                 if message.content.startswith('!help'):
                     await message.channel.send("You can offer demons by typing !red, !grey, or !crimson in chat. You can only make one offer at a time. Avoid posting multiple demon requests, simply add whatever other demons you may have in a message along with the initial demon offer.")
@@ -165,3 +192,4 @@ class MyClient(discord.Client):
 
 client=MyClient()
 client.run("NzQ5NDUxODQwMjgxNjQxMDAw.X0sLag.HW0k1dawwudl6USfYYHFgxx_OeU")
+
