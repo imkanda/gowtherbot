@@ -7,22 +7,22 @@ class MyClient(discord.Client):
     embedDic = {}
     demonList = ["<@&749439441579278416>", "<@&749438436188094464>", "<@&749439360394461301>"]
 
+
 ## embeds ##
     
-    async def welcome_message(self, channel):
+    async def welcome_message(self, channel, member):
         welcome_message = discord.Embed(
-            title = 'Title',
-            description = 'This is the description',
+            description = 'Welcome to Aogiritree, {} \n Please check {} to give yourself roles.'.format(member.mention),
             colour = discord.Colour.blue()
         )
-        welcome_message.set_footer(text='This is the footer')
-        welcome_message.set_image(url='https://images-ext-1.discordapp.net/external/PLczhzrY3aKz1z_bLEZtu3UmoiM6Yfhi1Yj43zhb9EA/https/cdn.discordapp.com/icons/712808446180720651/a_62f385677add7534a420a866e7b8ae08.gif')
-        welcome_message.set_thumbnail(url='https://images-ext-1.discordapp.net/external/PLczhzrY3aKz1z_bLEZtu3UmoiM6Yfhi1Yj43zhb9EA/https/cdn.discordapp.com/icons/712808446180720651/a_62f385677add7534a420a866e7b8ae08.gif')
+        welcome_message.set_footer(text='Enjoy your stay')
+        welcome_message.set_image(url='https://cdn.discordapp.com/attachments/749466052068376649/749760837333549136/aogiri_gif.gif')
+        ## welcome_message.set_thumbnail(url='https://images-ext-1.discordapp.net/external/PLczhzrY3aKz1z_bLEZtu3UmoiM6Yfhi1Yj43zhb9EA/https/cdn.discordapp.com/icons/712808446180720651/a_62f385677add7534a420a866e7b8ae08.gif')
         welcome_message.set_author(name='Author Name', icon_url='https://images-ext-1.discordapp.net/external/PLczhzrY3aKz1z_bLEZtu3UmoiM6Yfhi1Yj43zhb9EA/https/cdn.discordapp.com/icons/712808446180720651/a_62f385677add7534a420a866e7b8ae08.gif')
-        welcome_message.add_field(name='Field Name', value='Field Value', inline=False)
-        welcome_message.add_field(name='Field Name', value='Field Value', inline=True)
-        welcome_message.add_field(name='Field Name', value='Field Value', inline=True)
-        msg = await channel.send(embed=welcome_message)
+        ## welcome_message.add_field(name='Field Name', value=member.mention, inline=False)
+        ## welcome_message.add_field(name='Field Name', value='Field Value', inline=True)
+        ## welcome_message.add_field(name='Field Name', value='Field Value', inline=True)
+        await channel.send(embed=welcome_message)
 
     async def demon_sharing(self, channel):
         demon_sharing = discord.Embed(
@@ -120,9 +120,9 @@ class MyClient(discord.Client):
 ## welcome message stuff ##
 
     async def on_member_join(self, member):
-        ment = discord.Member.mention
-        await message.channel.send("{ment} has joined the server")
-        print(f"{member} has joined the server.")
+        ch = self.get_channel(749485433309757451)
+        await self.welcome_message(ch,member)
+        return
 
 ## demon-sharing commands ##
     
@@ -132,6 +132,8 @@ class MyClient(discord.Client):
         ## self.demon_sharing()    
         ## none of this ended up working so commented out, called by command instead            
     async def on_message(self, message):        
+            
+            
             if str(message.channel) == "demon-sharing":
             # demon sharing bot should only work in #demon-sharing
             # don't respond to ourselves
@@ -191,5 +193,5 @@ class MyClient(discord.Client):
                         #await channel.send('{} added {} to the grey demon embed'.format(user.name, reaction.emoji))
 
 client=MyClient()
-client.run("NzQ5NDUxODQwMjgxNjQxMDAw.X0sLag.HW0k1dawwudl6USfYYHFgxx_OeU")
+client.run("")
 
