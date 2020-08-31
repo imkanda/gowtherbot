@@ -12,13 +12,13 @@ class MyClient(discord.Client):
     
     async def welcome_message(self, channel, member):
         welcome_message = discord.Embed(
-            description = 'Welcome to Aogiritree, {} \n Please check {} to give yourself roles.'.format(member.mention),
+            description = 'Welcome to Aogiritree, {}. \n Make sure to check out <#749485522447237211> for obtaining roles.'.format(member.mention),
             colour = discord.Colour.blue()
         )
         welcome_message.set_footer(text='Enjoy your stay')
         welcome_message.set_image(url='https://cdn.discordapp.com/attachments/749466052068376649/749760837333549136/aogiri_gif.gif')
         ## welcome_message.set_thumbnail(url='https://images-ext-1.discordapp.net/external/PLczhzrY3aKz1z_bLEZtu3UmoiM6Yfhi1Yj43zhb9EA/https/cdn.discordapp.com/icons/712808446180720651/a_62f385677add7534a420a866e7b8ae08.gif')
-        welcome_message.set_author(name='Author Name', icon_url='https://images-ext-1.discordapp.net/external/PLczhzrY3aKz1z_bLEZtu3UmoiM6Yfhi1Yj43zhb9EA/https/cdn.discordapp.com/icons/712808446180720651/a_62f385677add7534a420a866e7b8ae08.gif')
+        welcome_message.set_author(name='Gowther', icon_url='https://cdn.discordapp.com/attachments/749438385042751552/749871807837896714/gowther.jpeg')
         ## welcome_message.add_field(name='Field Name', value=member.mention, inline=False)
         ## welcome_message.add_field(name='Field Name', value='Field Value', inline=True)
         ## welcome_message.add_field(name='Field Name', value='Field Value', inline=True)
@@ -120,7 +120,7 @@ class MyClient(discord.Client):
 ## welcome message stuff ##
 
     async def on_member_join(self, member):
-        ch = self.get_channel(749485433309757451)
+        ch = self.get_channel(749438385042751552)
         await self.welcome_message(ch,member)
         return
 
